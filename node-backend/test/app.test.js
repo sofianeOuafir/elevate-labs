@@ -17,7 +17,7 @@ afterAll(async () => {
 describe('POST /api/user', () => {
   it('should register a new user and return a JWT token', async () => {
     const newUser = {
-      username: 'testuser',
+      username: 'testuser@example.com',
       password: 'password123'
     };
 
@@ -29,9 +29,24 @@ describe('POST /api/user', () => {
     expect(res.body).toHaveProperty('token');
   });
 
+  it('should not register a user with an invalid email', async () => {
+    const invalidUser = {
+      username: 'invalidUsername',
+      password: 'password123'
+    };
+
+    const res = await request(app)
+      .post('/api/user')
+      .send(invalidUser);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('message');
+    expect(res.body.message).toEqual('Must be a valid email address');
+  });
+
   it('should not allow duplicate registration of the same username', async () => {
     const newUser = {
-      username: 'testuser',
+      username: 'testuser@example.com',
       password: 'password123'
     };
 
@@ -48,7 +63,7 @@ describe('POST /api/user', () => {
 describe('POST /api/sessions', () => {
   it('should log in an existing user and return a JWT token', async () => {
     const user = {
-      username: 'testuser',
+      username: 'testuser@example.com',
       password: 'password123'
     };
 
@@ -62,7 +77,7 @@ describe('POST /api/sessions', () => {
 
   it('should not log in with invalid credentials', async () => {
     const invalidUser = {
-      username: 'testuser',
+      username: 'testuser@example.com',
       password: 'wrongpassword'
     };
 
@@ -82,7 +97,7 @@ describe('POST /api/user/game_events', () => {
   beforeAll(async () => {
     // Register a new user
     const newUser = {
-      username: 'testuser',
+      username: 'testuser@example.com',
       password: 'password123'
     };
 
@@ -162,7 +177,7 @@ describe('GET /api/user', () => {
   beforeAll(async () => {
     // Register a new user
     const newUser = {
-      username: 'testuser',
+      username: 'testuser@example.com',
       password: 'password123'
     };
 
@@ -213,7 +228,7 @@ describe('GET /api/user', () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('user');
     expect(res.body.user).toHaveProperty('id');
-    expect(res.body.user).toHaveProperty('email', 'testuser');
+    expect(res.body.user).toHaveProperty('email', 'testuser@example.com');
     expect(res.body.user).toHaveProperty('stats');
     expect(res.body.user.stats).toHaveProperty('total_games_played', 2); // Two game events were reported
   });
@@ -233,7 +248,7 @@ describe('GET /api/user', () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('user');
     expect(res.body.user).toHaveProperty('id');
-    expect(res.body.user).toHaveProperty('email', 'testuser');
+    expect(res.body.user).toHaveProperty('email', 'testuser@example.com');
     expect(res.body.user).toHaveProperty('stats');
     expect(res.body.user.stats).toHaveProperty('total_games_played', 2); // Two game events were reported
   });
