@@ -1,5 +1,6 @@
-```markdown
 # Game Event Tracking API
+
+This application is deployed and accessible at [elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com](elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com). You can test the production app using Postman or curl.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -133,4 +134,3 @@ To deploy the application in production on AWS using AWS CDK, follow these instr
 ### Game Events
 - **POST /api/user/game_events**: Report a game completion event (authenticated).
 - **GET /api/user**: Retrieve user details and game stats (authenticated).
-```
