@@ -1,4 +1,3 @@
-```markdown
 # Game Event Tracking API
 
 ## Table of Contents
@@ -133,4 +132,3 @@ To deploy the application in production on AWS using AWS CDK, follow these instr
 ### Game Events
 - **POST /api/user/game_events**: Report a game completion event (authenticated).
 - **GET /api/user**: Retrieve user details and game stats (authenticated).
-```
