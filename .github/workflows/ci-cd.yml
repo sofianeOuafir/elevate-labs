@@ -1,0 +1,87 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: elevate-labs-app_node-backend
+  CLUSTER_NAME: elevateLabsAppCluster
+  SERVICE_NAME: elevate-labs-app-backend-service
+  CONTAINER_NAME: NodeContainer
+
+jobs:
+  build:
+    # TODO change to a specific version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Docker Compose
+        run: sudo apt-get install docker-compose -y
+
+      - name: Build and run test services with Docker Compose
+        run: docker-compose -f docker-compose.test.yml up --build -d
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until docker-compose -f docker-compose.test.yml exec -T postgres-test pg_isready -h localhost -p 5432 -U testuser; do
+            echo "Waiting for PostgreSQL to start..."
+            sleep 2
+          done
+
+      - name: Wait for Backend to be ready
+        run: |
+          until curl -s http://localhost:3001/health; do
+            echo "Waiting for Backend to start..."
+            sleep 2
+          done
+
+      - name: Run tests
+        run: docker-compose -f docker-compose.test.yml exec -T node-backend-test npm test
+
+      - name: Shut down Docker Compose services
+        if: always()
+        run: docker-compose -f docker-compose.test.yml down
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: sudo apt-get install docker-compose -y
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}
+
+      - name: Build, tag, and push Docker image to ECR
+        run: |
+          docker build -f node-backend/Dockerfile --build-arg CMD="npm run start" -t node-backend:latest -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest node-backend/
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
+
+      - name: Update ECS service with the new image
+        run: |
+          aws ecs update-service --cluster ${{ env.CLUSTER_NAME }} --service ${{ env.SERVICE_NAME }} --force-new-deployment

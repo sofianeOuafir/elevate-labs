@@ -1,0 +1,10 @@
+FROM postgres:13
+
+# Copy initialization script, CSV file, and custom entrypoint script
+COPY database/init.d/entrypoint.sh /usr/local/bin/
+
+# Make the entrypoint script executable
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Override the default entrypoint to use the custom script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

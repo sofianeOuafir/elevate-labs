@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  postgres:
+    build:
+      context: ./node-backend
+      dockerfile: Dockerfile.postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  node-backend:
+    build: ./node-backend
+    container_name: node-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=mydatabase
+      - NODE_ENV=development
+      - JWT_SECRET=myverysecretjwtsecret
+    volumes:
+      - ./node-backend:/usr/src/app
+    command: npm run dev
+
+volumes:
+  postgres_data:

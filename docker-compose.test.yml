@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  postgres-test:
+    build:
+      context: ./node-backend
+      dockerfile: Dockerfile.postgres
+    container_name: postgres-test
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: testdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d testdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  node-backend-test:
+    build: ./node-backend
+    container_name: node-backend-test
+    ports:
+      - "3001:3000"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres-test
+      - DB_PORT=5432
+      - DB_USER=testuser
+      - DB_PASSWORD=testpassword
+      - DB_NAME=testdb
+      - NODE_ENV=test
+      - NODE_BACKEND_URL=node-backend-test:3000
+      - JWT_SECRET=myverysecretjwtsecret
+    volumes:
+      - ./node-backend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_test_data:
