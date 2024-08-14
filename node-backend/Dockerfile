@@ -30,4 +30,4 @@ ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # Run the application
 # Set the default command, which can be overridden by --build-arg CMD="..."
-CMD ["sh", "-c", "$CMD"]
+CMD ["sh", "-c", "${CMD:-npm run start}"]
