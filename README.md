@@ -1,6 +1,6 @@
 # Game Event Tracking API
 
-This application is deployed and accessible at [elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com](elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com). You can test the production app using Postman or curl.
+This application is deployed and accessible at [elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com](elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com). You can test the production app using Postman or curl. I've provided a postman collection that you can import in Postman for testing purposes (see elevate-labs.postman_collection.json in the root dir)
 
 ## Table of Contents
 - [Introduction](#introduction)

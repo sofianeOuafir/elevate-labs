@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "a94bf74d-face-4718-b6b0-9b8776f8f16b",
+		"name": "Elevate Labs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37685441"
+	},
+	"item": [
+		{
+			"name": "/api/user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"something@live.com\",\n    \"password\": \"passowrd123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com/api/user",
+					"protocol": "http",
+					"host": [
+						"elevate-labs-app-alb-1969362384",
+						"us-east-1",
+						"elb",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/sessions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"sofiane\",\n    \"password\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com/api/sessions",
+					"protocol": "http",
+					"host": [
+						"elevate-labs-app-alb-1969362384",
+						"us-east-1",
+						"elb",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"sessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/user/game_events",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJzb2ZpYW5lIiwiaWF0IjoxNzIzNjQ0MzEwLCJleHAiOjE3MjM2NDc5MTB9.FJd8N_Je-LyfclfhuljDa2Wxy65rgE2OrxLH1QQB74Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"game_event\": {\n        \"type\": \"COMPLETED\",\n        \"occurred_at\": \"2024-08-14T13:59:18\",\n        \"game_id\": 12346\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com/api/user/game_events",
+					"protocol": "http",
+					"host": [
+						"elevate-labs-app-alb-1969362384",
+						"us-east-1",
+						"elb",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"user",
+						"game_events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJzb2ZpYW5lIiwiaWF0IjoxNzIzNjQ0MzEwLCJleHAiOjE3MjM2NDc5MTB9.FJd8N_Je-LyfclfhuljDa2Wxy65rgE2OrxLH1QQB74Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://elevate-labs-app-alb-1969362384.us-east-1.elb.amazonaws.com/api/user",
+					"protocol": "http",
+					"host": [
+						"elevate-labs-app-alb-1969362384",
+						"us-east-1",
+						"elb",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
