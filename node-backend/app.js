@@ -24,7 +24,7 @@ app.use(
 app.use(bodyParser.json());
 
 app.get('/health', async (req, res) => {
-  res.status(200).send('OK, it works!');
+  res.status(200).send('OK, it works! version 2');
 });
 
 // Register user route
