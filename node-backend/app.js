@@ -43,10 +43,15 @@ app.post('/api/user', async (req, res) => {
     const token = generateToken(newUser);
     res.status(201).json({ token });
   } catch (err) {
+    if (err.name === 'SequelizeValidationError') {
+      // Handle validation errors
+      return res.status(400).json({ message: err.errors[0].message });
+    }
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // Login user route
 app.post('/api/sessions', async (req, res) => {
